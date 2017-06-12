@@ -46,12 +46,18 @@ typedef struct personnelArchiveInfo
 void menu();
 void InputRecord(PAInfo s[], int n);
 void AddRecord(PAInfo s[], int n);
+void numwork(PAInfo s[]);
+void numpolitic(PAInfo s[]);
+void numsex(PAInfo s[]);
+void numedu(PAInfo s[]);
+void numpost(PAInfo s[]);
+int lenofbum(PAInfo s[], int k);
 void DeleteInfo(PAInfo s[]);
 void SearchName(PAInfo s[]);
 void SearchNo(PAInfo s[]);
-void ReadFp(PAInfo s[]);
-void ListRead(PAInfo s[],int n);
 void Change(PAInfo s[]);
+void SortAge(PAInfo s[]);
+void Sortstart_time(PAInfo s[]);
 int main()
 {
     PAInfo st[N];
@@ -80,14 +86,19 @@ int main()
         case 4:
             SearchNo(st);
             break;
-
         case 5:
             SearchName(st);
             break;
         case 6:
             Change(st);
             break;
-        case 9:
+        case 7:
+            Sortstart_time(st);
+            break;
+        case 8:
+            SortAge(st);
+            break;
+        case 10:
             exit(0);
             break;
         default:
@@ -104,9 +115,10 @@ void menu()
     printf("4.按编号查找信息\n");
     printf("5.按姓名查找信息\n");
     printf("6.数据修改\n");
-    printf("7.排序\n");
-    printf("8.人员统计\n");
-    printf("9.退出系统\n");
+    printf("7.按来院时间排序\n");
+    printf("8.按年龄排序\n");
+    printf("9.人员统计\n");
+    printf("10.退出系统\n");
 
 }
 void InputRecord(PAInfo s[], int n)
@@ -160,7 +172,7 @@ void AddRecord(PAInfo s[], int n)
         scanf("%s",s[i].No);
         printf("请输入姓名\n");
         scanf("%s",s[i].name);
-        printf("请输入性别\n");
+        printf("请输入性别(男1|女0)\n");
         scanf("%d",&s[i].sex);
         printf("请输入年龄\n");
         scanf("%d",&s[i].age);
@@ -179,32 +191,6 @@ void AddRecord(PAInfo s[], int n)
         fprintf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,s[i].sex,s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
     }
     fclose(fp);
-}
-void ReadFp(PAInfo s[])
-{
-    FILE *fp;
-    int i=0;
-    if((fp=fopen("personinfo.txt","a"))==NULL)
-    {
-        printf("Fail to open personinfo.txt.\n");
-        exit(0);
-    }
-    while(!feof(fp))
-    {
-        fscanf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,&s[i].sex,&s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
-        i++;
-    }
-    fclose(fp);
-}
-void ListRead(PAInfo s[],int n)
-{
-    int i;
-    printf("编号 姓名 性别 年龄 职务 职称 政治面貌 最高学历 任职时间 来院时间\n");
-    for(i=0; i<n; i++)
-    {
-        printf("%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,s[i].sex,s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
-    }
-
 }
 void SearchName(PAInfo s[])
 {
@@ -231,17 +217,7 @@ void SearchName(PAInfo s[])
         if(strcmp(z,s[i].name)==0)
         {
             printf("编号 姓名 性别 年龄 职务 职称 政治面貌 最高学历 任职时间 来院时间\n");
-            printf("%s\t",s[i].No);
-            printf("%s\t",s[i].name);
-            printf("%d\t",s[i].sex);
-            printf("%d\t",s[i].age);
-            printf("%s\t",s[i].job);
-            printf("%s\t",s[i].post);
-            printf("%s\t",s[i].politic);
-            printf("%s\t",s[i].edu_level);
-            printf("%s\t",s[i].period);
-            printf("%s\t",s[i].start_time);
-            printf("\n");
+            printf("%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,s[i].sex,s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
             n++;
         }
     }
@@ -277,18 +253,7 @@ void SearchNo(PAInfo s[])
         if(strcmp(z,s[i].No)==0)
         {
             printf("编号 姓名 性别 年龄 职务 职称 政治面貌 最高学历 任职时间 来院时间\n");
-            printf("%s\t",s[i].No);
-            printf("%s\t",s[i].name);
-            printf("%d\t",s[i].sex);
-            printf("%d\t",s[i].age);
-            printf("%s\t",s[i].job);
-            printf("%s\t",s[i].post);
-            printf("%s\t",s[i].politic);
-            printf("%s\t",s[i].edu_level);
-            printf("%s\t",s[i].period);
-            printf("%s\t",s[i].start_time);
-            printf("\n");
-            n++;
+            printf("%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,s[i].sex,s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
         }
     }
     if(n==0)
@@ -326,7 +291,7 @@ void DeleteInfo(PAInfo s[])
         if(strcmp(s[j].No,num)!=0)
         {
             fprintf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[j].No,s[j].name,s[j].sex,s[j].age,s[j].job,s[j].post,s[j].politic,s[j].edu_level,s[j].period,s[j].start_time);
-        printf("删除成功\n");
+            printf("删除成功\n");
         }
     }
 
@@ -357,11 +322,7 @@ void Change(PAInfo s[])
     }
     for(j=0; j<i; j++)
     {
-        if(strcmp(s[j].No,num)!=0)
-        {
-            fprintf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[j].No,s[j].name,s[j].sex,s[j].age,s[j].job,s[j].post,s[j].politic,s[j].edu_level,s[j].period,s[j].start_time);
-        }
-        else
+        if(strcmp(s[j].No,num)==0)
         {
             printf("请选择改变选项\n");
             printf("1.修改编号\n");
@@ -377,31 +338,174 @@ void Change(PAInfo s[])
             scanf("%d",&x);
             switch(x)
             {
-            case 1:printf("请输入编号\n");
-        scanf("%s",s[i].No);break;
-                case 2:printf("请输入姓名\n");
-        scanf("%s",s[i].name);break;
-                case 3:printf("请输入性别\n");
-        scanf("%d",&s[i].sex);break;
-                case 4:printf("请输入年龄\n");
-        scanf("%d",&s[i].age);break;
-                case 5:printf("请输职务\n");
-        scanf("%s",s[i].job);break;
-                case 6:printf("请输入职称\n");
-        scanf("%s",s[i].post);break;
-                case 7:printf("请输入政治面貌\n");
-        scanf("%s",s[i].politic);break;
-                case 8:printf("最高学历\n");
-        scanf("%s",s[i].edu_level);break;
-                case 9: printf("请输入任职时间\n");
-        scanf("%s",s[i].period);break;
-                case 10:printf("请输入来院时间\n");
-        scanf("%s",s[i].start_time);break;
-                default:printf("无变化\n");break;
+            case 1:
+                printf("请输入编号\n");
+                scanf("%s",s[j].No);
+                break;
+            case 2:
+                printf("请输入姓名\n");
+                scanf("%s",s[j].name);
+                break;
+            case 3:
+                printf("请输入性别\n");
+                scanf("%d",&s[j].sex);
+                break;
+            case 4:
+                printf("请输入年龄\n");
+                scanf("%d",&s[j].age);
+                break;
+            case 5:
+                printf("请输职务\n");
+                scanf("%s",s[j].job);
+                break;
+            case 6:
+                printf("请输入职称\n");
+                scanf("%s",s[j].post);
+                break;
+            case 7:
+                printf("请输入政治面貌\n");
+                scanf("%s",s[j].politic);
+                break;
+            case 8:
+                printf("最高学历\n");
+                scanf("%s",s[j].edu_level);
+                break;
+            case 9:
+                printf("请输入任职时间\n");
+                scanf("%s",s[j].period);
+                break;
+            case 10:
+                printf("请输入来院时间\n");
+                scanf("%s",s[j].start_time);
+                break;
+            default:
+                printf("无变化\n");
+                break;
             }
-            fprintf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[j].No,s[j].name,s[j].sex,s[j].age,s[j].job,s[j].post,s[j].politic,s[j].edu_level,s[j].period,s[j].start_time);
         }
     }
+    for(j=0; j<i; j++)
+    {
+        fprintf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[j].No,s[j].name,s[j].sex,s[j].age,s[j].job,s[j].post,s[j].politic,s[j].edu_level,s[j].period,s[j].start_time);
+    }
+
     fclose(fp);
 }
+void SortAge(PAInfo s[])
+{
+    FILE  *fp;
+    PAInfo temp;
+    int i=0,j,n=0;
+    if((fp=fopen("personinfo.txt","r"))==NULL)
+    {
+        printf("Fail to open personinfo.txt.\n");
+        exit(0);
+    }
+    while(!feof(fp))
+    {
+        fscanf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,&s[i].sex,&s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
+        n++;
+        i++;
+    }
+    for(i=0; i<n-1; i++)
+    {
+        for(j=i+1; j<n; j++)
+        {
+            if(s[j].age<s[i].age)
+            {
+                temp=s[j];
+                s[j]=s[i];
+                s[i]=temp;
+            }
+        }
+    }
+    printf("编号 姓名 性别 年龄 职务 职称 政治面貌 最高学历 任职时间 来院时间\n");
+    for(i=0; i<n; i++)
+    {
+
+        printf("%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,s[i].sex,s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
+    }
+    fclose(fp);
+
+}
+void Sortstart_time(PAInfo s[])
+{
+    FILE  *fp;
+    PAInfo temp;
+    int i=0,j,n=0;
+    if((fp=fopen("personinfo.txt","r"))==NULL)
+    {
+        printf("Fail to open personinfo.txt.\n");
+        exit(0);
+    }
+    while(!feof(fp))
+    {
+        fscanf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,&s[i].sex,&s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
+        n++;
+        i++;
+    }
+    for(i=0; i<n-1; i++)
+    {
+        for(j=i+1; j<n; j++)
+        {
+            if(lenofbum(s,j)<lenofbum(s,i))
+            {
+                temp=s[j];
+                s[j]=s[i];
+                s[i]=temp;
+            }
+        }
+    }
+    printf("编号 姓名 性别 年龄 职务 职称 政治面貌 最高学历 任职时间 来院时间\n");
+    for(i=0; i<n; i++)
+    {
+
+        printf("%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,s[i].sex,s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
+    }
+    fclose(fp);
+
+}
+int lenofbum(PAInfo s[], int k)
+{
+    int temp=0,i;
+    for(i=0; i<strlen(s[k].start_time); i++)
+        temp=temp*10+(s[k].start_time[i]-'0');
+    return temp;
+}
+
+void numwork(PAInfo s[]);
+void numpolitic(PAInfo s[]);
+void numsex(PAInfo s[]);
+void numedu(PAInfo s[]);
+void numpost(PAInfo s[])
+{
+    FILE *fp;
+    int i=0,k,ad[4]= {0};
+    if((fp=fopen("personinfo.txt","a"))==NULL)
+    {
+        printf("Fail to open personinfo.txt.\n");
+        exit(0);
+    }
+    while(!feof(fp))
+    {
+        fscanf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,&s[i].sex,&s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
+        i++;
+    }
+    fclose(fp);
+    for(k=0; k<i; k++)
+    {
+        if(strcmp(s[k].post,'assistant')==0)ad[0]++;
+        else if(strcmp(s[k].post,'lecturer')==0)ad[1]++;
+        else if(strcmp(s[k].post,'associate professor')==0)
+            ad[2]++;
+        else if(strcmp(s[k].post,'professor')==0)
+            ad[3]++;
+
+    }
+    printf("助教%d 讲师%d 副教授%d 教授%d",ad[0],ad[1],ad[2],ad[3]);
+
+}
+
+
+
 
