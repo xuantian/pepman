@@ -500,6 +500,7 @@ void Sortstart_time(PAInfo s[])
     fclose(fp);
 
 }
+//计算数组中存放时间
 int lenofbum(PAInfo s[], int k)
 {
     int temp=0,i;
