@@ -99,7 +99,9 @@ int main()
         case 8:
             SortAge(st);
             break;
-        case 9:menutj(st);break;
+        case 9:
+            menutj(st);
+            break;
         case 10:
             exit(0);
             break;
@@ -534,7 +536,7 @@ void numwork(PAInfo s[])
 void numpolitic(PAInfo s[])
 {
     FILE *fp;
-    int i=0,k,ad[3]= {0};
+    int i=0,k,ad=0;
     if((fp=fopen("personinfo.txt","a"))==NULL)
     {
         printf("Fail to open personinfo.txt.\n");
@@ -548,19 +550,19 @@ void numpolitic(PAInfo s[])
     fclose(fp);
     for(k=0; k<i; k++)
     {
-        if(strcmp(s[k].politic,"qunzhong")==0)ad[0]++;
-        else if(strcmp(s[k].politic,"tuanyuan")==0)ad[1]++;
-        else if(strcmp(s[k].politic,"dangyuan")==0)
-            ad[2]++;
+        if(strcmp(s[k].politic,"dangyuan")==0)
+        {
+            ad++;
+        }
 
     }
-    printf("群众%d 团员%d 党员%d\n",ad[0],ad[1],ad[2]);
+    printf("党员%d:\n",ad);
 }
 void numsex(PAInfo s[])
 {
     FILE *fp;
-    int i=0,k,ad[2]= {0};
-    if((fp=fopen("personinfo.txt","a"))==NULL)
+    int i=0,k,ad=0;
+    if((fp=fopen("personinfo.txt","r"))==NULL)
     {
         printf("Fail to open personinfo.txt.\n");
         exit(0);
@@ -570,15 +572,18 @@ void numsex(PAInfo s[])
         fscanf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,&s[i].sex,&s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
         i++;
     }
-    fclose(fp);
+
     for(k=0; k<i; k++)
     {
-        if(s[k].sex==1)ad[0]++;
-        else if(s[k].sex==0)ad[1]++;
+        if(s[k].sex==0)
+        {
+            ad++;
+        }
 
 
     }
-    printf("男%d 女%d\n",ad[0],ad[1]);
+    fclose(fp);
+    printf("女工%d\n",ad);
 }
 void numedu(PAInfo s[])
 {
@@ -597,13 +602,21 @@ void numedu(PAInfo s[])
     fclose(fp);
     for(k=0; k<i; k++)
     {
-        if(strcmp(s[k].edu_level,"xueshi")==0)ad[0]++;
-        else if(strcmp(s[k].edu_level,"shuoshi")==0)ad[1]++;
+        if(strcmp(s[k].edu_level,"benke")==0)
+        {
+            ad[0]++;
+        }
+        else if(strcmp(s[k].edu_level,"shuoshi")==0)
+        {
+            ad[1]++;
+        }
         else if(strcmp(s[k].edu_level,"boshi")==0)
+        {
             ad[2]++;
+        }
 
     }
-    printf("学士%d 硕士%d 博士%d\n",ad[0],ad[1],ad[2]);
+    printf("本科%d 硕士%d 博士%d\n总人数%d\n",ad[0],ad[1],ad[2],ad[0]+ad[1]+ad[2]);
 }
 void numpost(PAInfo s[])
 {
@@ -622,15 +635,13 @@ void numpost(PAInfo s[])
     fclose(fp);
     for(k=0; k<i; k++)
     {
-        if(strcmp(s[k].post,"zhujiao")==0)ad[0]++;
-        else if(strcmp(s[k].post,"jiangshi")==0)ad[1]++;
-        else if(strcmp(s[k].post,"fujiaoshou")==0)
-            ad[2]++;
+        if(strcmp(s[k].post,"fujiaoshou")==0)
+            ad[0]++;
         else if(strcmp(s[k].post,"jiaoshou")==0)
-            ad[3]++;
+            ad[1]++;
 
     }
-    printf("助教%d 讲师%d 副教授%d 教授%d\n",ad[0],ad[1],ad[2],ad[3]);
+    printf("=副教授%d 教授%d\n总人数%d\n",ad[0],ad[1],ad[0]+ad[1]);
 
 }
 
