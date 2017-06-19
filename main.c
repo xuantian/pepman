@@ -2,34 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #define N 1000
-/*
-1）数据输入模块
-   把员工信息写入人事档案文件。
-（2）数据添加模块
-   用追加的方式把新增员工信息写入人事档案文件。
-（3）数据删除模块
-根据人员编号查找要删除的人员，从文件中读一条记录，查看编号是否要删除，如果是，则舍弃，不再写入文件；否则重新写入文件。
-（4）数据查询模块
-     把编号和姓名作为查询字段，用基本查找算法查找人事档案文件，把符合查找要求的记录输出。
-（5）数据修改模块
-    查找要修改的记录，修改之。先读记录，若是要修改的记录，则修改信息，把修改后的信息写入文件；否则直接写入文件。
-（6）数据排序模块
-    通过菜单选择年龄或者来院时间，把数据从文件中读出来，任意选择一种排序算法对记录进行排序，输出排序结果。
-（7）数据统计模块
-通过菜单选择统计字段：在职人数、党员人数、女工人数、高学历人数、高职称人数。
-例如选择党员人数，则统计运算伪码如下：
-Count=0;    //记录在职人数
-While（文件未读完）
-{
-   读一条记录；
-   If(政治面貌是党员)
-   {
-      Count++;
-    输出该条记录；
-}
-其他字段的统计运算与次类似。
-*/
-
 typedef struct personnelArchiveInfo
 {
     char No[10];       //编号
@@ -130,10 +102,10 @@ void menutj(PAInfo s[])
     int x;
     printf("请输入选项\n");
     printf("1.在职人数统计\n");
-    printf("2.政治面貌统计\n");
-    printf("3.性别统计\n");
-    printf("4.学历统计\n");
-    printf("5.职称统计\n");
+    printf("2.党员人数统计\n");
+    printf("3.女工人数统计\n");
+    printf("4.高学历人数统计\n");
+    printf("5.高职称人数统计\n");
     scanf("%d",&x);
     switch(x)
     {
@@ -515,7 +487,7 @@ void numwork(PAInfo s[])
 {
     FILE *fp;
     int i=0,k,ad=0;
-    if((fp=fopen("personinfo.txt","a"))==NULL)
+    if((fp=fopen("personinfo.txt","r"))==NULL)
     {
         printf("Fail to open personinfo.txt.\n");
         exit(0);
@@ -525,19 +497,21 @@ void numwork(PAInfo s[])
         fscanf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,&s[i].sex,&s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
         i++;
     }
-    fclose(fp);
     for(k=0; k<i; k++)
     {
-        if(s[k].post[0]!='\0')ad++;
-
+        if(s[k].post[0]!='\0')
+        {
+            ad++;
+        }
     }
+    fclose(fp);
     printf("在职人数%d\n",ad);
 }
 void numpolitic(PAInfo s[])
 {
     FILE *fp;
     int i=0,k,ad=0;
-    if((fp=fopen("personinfo.txt","a"))==NULL)
+    if((fp=fopen("personinfo.txt","r"))==NULL)
     {
         printf("Fail to open personinfo.txt.\n");
         exit(0);
@@ -547,7 +521,6 @@ void numpolitic(PAInfo s[])
         fscanf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,&s[i].sex,&s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
         i++;
     }
-    fclose(fp);
     for(k=0; k<i; k++)
     {
         if(strcmp(s[k].politic,"dangyuan")==0)
@@ -556,6 +529,7 @@ void numpolitic(PAInfo s[])
         }
 
     }
+    fclose(fp);
     printf("党员%d:\n",ad);
 }
 void numsex(PAInfo s[])
@@ -579,8 +553,6 @@ void numsex(PAInfo s[])
         {
             ad++;
         }
-
-
     }
     fclose(fp);
     printf("女工%d\n",ad);
@@ -589,7 +561,7 @@ void numedu(PAInfo s[])
 {
     FILE *fp;
     int i=0,k,ad[3]= {0};
-    if((fp=fopen("personinfo.txt","a"))==NULL)
+    if((fp=fopen("personinfo.txt","r"))==NULL)
     {
         printf("Fail to open personinfo.txt.\n");
         exit(0);
@@ -599,7 +571,6 @@ void numedu(PAInfo s[])
         fscanf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,&s[i].sex,&s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
         i++;
     }
-    fclose(fp);
     for(k=0; k<i; k++)
     {
         if(strcmp(s[k].edu_level,"benke")==0)
@@ -616,13 +587,14 @@ void numedu(PAInfo s[])
         }
 
     }
+    fclose(fp);
     printf("本科%d 硕士%d 博士%d\n总人数%d\n",ad[0],ad[1],ad[2],ad[0]+ad[1]+ad[2]);
 }
 void numpost(PAInfo s[])
 {
     FILE *fp;
     int i=0,k,ad[4]= {0};
-    if((fp=fopen("personinfo.txt","a"))==NULL)
+    if((fp=fopen("personinfo.txt","r"))==NULL)
     {
         printf("Fail to open personinfo.txt.\n");
         exit(0);
@@ -632,19 +604,19 @@ void numpost(PAInfo s[])
         fscanf(fp,"%s %s %d %d %s %s %s %s %s %s\n",s[i].No,s[i].name,&s[i].sex,&s[i].age,s[i].job,s[i].post,s[i].politic,s[i].edu_level,s[i].period,s[i].start_time);
         i++;
     }
-    fclose(fp);
     for(k=0; k<i; k++)
     {
         if(strcmp(s[k].post,"fujiaoshou")==0)
+        {
             ad[0]++;
+        }
         else if(strcmp(s[k].post,"jiaoshou")==0)
+        {
             ad[1]++;
+        }
 
     }
-    printf("=副教授%d 教授%d\n总人数%d\n",ad[0],ad[1],ad[0]+ad[1]);
+    fclose(fp);
+    printf("副教授%d 教授%d\n总人数%d\n",ad[0],ad[1],ad[0]+ad[1]);
 
 }
-
-
-
-
